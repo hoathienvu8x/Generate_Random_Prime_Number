@@ -28,7 +28,7 @@ endif
 	@$(CC) objects/main.o $(OBJECTS) -o $@ $(LDFLAGS)
 	@$(RM) objects/main.o
 
-objects/%.o: %.c
+objects/%.o: src/%.c
 	@echo "Build '$@' object ..."
 	@$(CC) -c $(CFLAGS) $< -o $@ $(LDFLAGS)
 

@@ -3,14 +3,19 @@
 #include <time.h>
 #include <stdint.h>
 
-// Miller-Robin primality test
-// return false: number n is composite
-// return true:  number n is very likely to be a prime
-//
-bool is_prime(gint n, size_t trials)
+/* Miller-Robin primality test
+ * return 0: number n is composite
+ * return 1:  number n is very likely to be a prime
+ */
+
+#ifndef max
+  #define max(a, b) ((a > b) ? a : b)
+#endif
+
+int is_prime(gint n, size_t trials)
 {
     if (ggint_is_even(n))
-        return false;
+        return 0;
 
     gint _1;
     ggint_one(_1);
@@ -68,16 +73,16 @@ bool is_prime(gint n, size_t trials)
             ggint_set_gint(x, g);
 
             if (ggint_equal(x, _1))
-                return false;
+                return 0;
 
             if (ggint_equal(x, n_1))
                 break;
         }
 
-        if (ggint_equal(x, n_1) == false)
-            return false;
+        if (ggint_equal(x, n_1) == 0)
+            return 0;
     }
-    return true;
+    return 1;
 }
 
 void generate_prime_number(uint8_t number[], int nbits){
@@ -106,7 +111,7 @@ void generate_prime_number(uint8_t number[], int nbits){
 
     size_t ncheck = 0;
     size_t i,p,r;
-    while (true)
+    while (1)
     {
         if (ggint_is_zero(n))
         {
@@ -122,18 +127,18 @@ void generate_prime_number(uint8_t number[], int nbits){
             }
         }
 
-        bool do_fast = true;
-        while (true)
+        int do_fast = 1;
+        while (1)
         {
             for (i = 0; i < smallPrimesCount; ++i)
             {
                 if (pmod[i] == 0)
                 {
-                    do_fast = false;
+                    do_fast = 0;
                     break;
                 }
             }
-            if (do_fast == false)
+            if (do_fast == 0)
             {
                 ncheck++;
                 ggint_add_int(2, n);
@@ -144,12 +149,12 @@ void generate_prime_number(uint8_t number[], int nbits){
                     if (pmod[i] >= p)
                         pmod[i] -= p;
                 }
-                do_fast = true;
+                do_fast = 1;
                 continue;
             }
             else
                 break;
-            if (do_fast == false)
+            if (do_fast == 0)
                 break;
         }
 
@@ -159,7 +164,7 @@ void generate_prime_number(uint8_t number[], int nbits){
             for(i = 0; i <128; i++){
                 number[i] = n[127-i];
             }
-            ggint_print_format("p", n,true);
+            ggint_print_format("p", n,1);
             break;
         }
         else

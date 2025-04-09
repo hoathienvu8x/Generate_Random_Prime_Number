@@ -1,6 +1,6 @@
-//
-// Created by ubuntu on 15/05/2019.
-//
+/*
+ * Created by ubuntu on 15/05/2019.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -8,73 +8,76 @@
 #include <time.h>
 #include "GInt.h"
 
-// typedef uint8_t gint[GInt_Size];
+#ifndef min
+  #define min(a, b) ((a < b) ? a : b)
+#endif
+
 gint ggint_cache[GInt_Base+1];
-bool ggint_cache_empty = true;
+int ggint_cache_empty = 1;
 gint ggint_lastnum;
 
-bool ggint_equal(gint a, gint b)
+int ggint_equal(gint a, gint b)
 {
     size_t i=0;
     for (i = 0; i < GInt_Size; i++)
         if (a[i] != b[i])
-            return false;
-    return true;
+            return 0;
+    return 1;
 }
-// a < b
-bool ggint_less(gint a, gint b)
+/* a < b */
+int ggint_less(gint a, gint b)
 {
     size_t i=0;
     for (i = GInt_Size - 1; ; i--)
     {
-        if (a[i] < b[i]) return true;
-        if (a[i] > b[i]) return false;
+        if (a[i] < b[i]) return 1;
+        if (a[i] > b[i]) return 0;
         if (i == 0) break;
     }
-    return false;
+    return 0;
 }
-// a <= b
-bool ggint_less_or_equal(gint a, gint b)
+/* a <= b */
+int ggint_less_or_equal(gint a, gint b)
 {
     size_t i=0;
     for (i = GInt_Size - 1; ; i--)
     {
-        if (a[i] < b[i]) return true;
-        if (a[i] > b[i]) return false;
+        if (a[i] < b[i]) return 1;
+        if (a[i] > b[i]) return 0;
         if (i == 0) break;
     }
-    return true;
+    return 1;
 }
-// a == 0
-bool ggint_is_zero(gint a)
+/* a == 0 */
+int ggint_is_zero(gint a)
 {
     size_t i=0;
     for (i = 0; i < GInt_Size; ++i)
-        if (a[i] != 0) return false;
-    return true;
+        if (a[i] != 0) return 0;
+    return 1;
 }
-// a & 1 == 0
-bool ggint_is_even(gint a)
+/* a & 1 == 0 */
+int ggint_is_even(gint a)
 {
     return (a[0] & 1) == 0;
 }
-// a & 1 == 1
-bool ggint_is_odd(gint a)
+/* a & 1 == 1 */
+int ggint_is_odd(gint a)
 {
     return (a[0] & 1) == 1;
 }
-// a = 0
+/* a = 0 */
 void ggint_zero(gint a)
 {
     memset(a,0,GInt_Size);
 }
-// a = 1
+/* a = 1 */
 void ggint_one(gint a)
 {
     ggint_zero(a);
     a[0]=1;
 }
-// a = value
+/* a = value */
 void ggint_set(gint a, size_t value)
 {
     ggint_zero(a);
@@ -86,12 +89,12 @@ void ggint_set(gint a, size_t value)
         i++;
     }
 }
-// a = b
+/* a = b */
 void ggint_set_gint(gint a, gint b)
 {
     memcpy(a,b,GInt_Size);
 }
-//b = b + a
+/* b = b + a */
 void ggint_add_gint( gint a, gint b)
 {
     uint16_t x = 0;
@@ -103,7 +106,7 @@ void ggint_add_gint( gint a, gint b)
         x /= GInt_Base;
     }
 }
-//b = b + a
+/* b = b + a */
 void ggint_add_int(uint8_t a, gint b)
 {
     uint16_t x = a;
@@ -117,7 +120,7 @@ void ggint_add_int(uint8_t a, gint b)
             break;
     }
 }
-//b = b - a
+/* b = b - a */
 void ggint_sub_gint( gint a, gint b)
 {
     uint16_t r = 0;
@@ -150,7 +153,7 @@ void ggint_sub_int( uint8_t a, gint b)
             r = 0;
         }
 }
-//a = a << 8*sh (base 256)
+/* a = a << 8*sh (base 256) */
 void ggint_shl(gint a, size_t sh)
 {
     if (sh == 0)
@@ -163,7 +166,7 @@ void ggint_shl(gint a, size_t sh)
     for (i = 0; i < sh; i++)
         a[i] = 0;
 }
-//a = a >> 8*sh (base 256)
+/* a = a >> 8*sh (base 256) */
 void ggint_shr(gint a, size_t sh)
 {
     if (sh == 0)
@@ -176,7 +179,7 @@ void ggint_shr(gint a, size_t sh)
     for (i = 0; i < sh; i++)
         a[GInt_Size - 1 - i] = 0;
 }
-//a = a << sh
+/* a = a << sh */
 void ggint_shbl(gint a, size_t sh)
 {
     if (sh == 0)
@@ -195,7 +198,7 @@ void ggint_shbl(gint a, size_t sh)
         bits0 = bits1;
     }
 }
-// a = a >> sh
+/* a = a >> sh */
 void ggint_shbr(gint a, size_t sh)
 {
     if (sh == 0)
@@ -216,7 +219,7 @@ void ggint_shbr(gint a, size_t sh)
             break;
     }
 }
-// b = b * a
+/* b = b * a */
 void ggint_mul_int( uint8_t a, gint b)
 {
     uint16_t r = 0;
@@ -228,7 +231,7 @@ void ggint_mul_int( uint8_t a, gint b)
         r /= GInt_Base;
     }
 }
-// p = a * b
+/* p = a * b */
 void ggint_mul_gint( gint a,  gint b, gint p)
 {
     gint t;
@@ -242,7 +245,7 @@ void ggint_mul_gint( gint a,  gint b, gint p)
         ggint_add_gint(t, p);
     }
 }
-// b / a = q, b % a = r
+/* b / a = q, b % a = r */
 void ggint_div_gint( gint a,  gint b, gint q, gint r)
 {
     ggint_zero(q);
@@ -274,7 +277,7 @@ void ggint_div_gint( gint a,  gint b, gint q, gint r)
     }
 }
 
-// b % a = r
+/* b % a = r */
 void ggint_mod_gint2( gint a,  gint b, gint r)
 {
     gint q;
@@ -292,7 +295,7 @@ void ggint_mod_gint(gint a, gint b, gint r)
     gint t;
 
     ggint_set_gint(ggint_lastnum, a);
-    if (ggint_cache_empty || ggint_equal(a, ggint_lastnum) == false)
+    if (ggint_cache_empty || ggint_equal(a, ggint_lastnum) == 0)
     {
         ggint_zero(t);
         size_t k;
@@ -320,7 +323,7 @@ void ggint_mod_gint(gint a, gint b, gint r)
             {
                 int k0 = 0;
                 int k1 = GInt_Base;
-                while (true)
+                while (1)
                 {
                     int m = (k0 + k1)/2;
                     if (ggint_less_or_equal(ggint_cache[m], r))
@@ -339,7 +342,7 @@ void ggint_mod_gint(gint a, gint b, gint r)
         if (i == 0) break;
     }
 }
-// b % a = r
+/* b % a = r */
 void ggint_mod_int(size_t a,  gint b, size_t *r)
 {
     *r = 0;
@@ -352,7 +355,7 @@ void ggint_mod_int(size_t a,  gint b, size_t *r)
     }
 }
 
-// generate random number a
+/* generate random number a */
 void ggint_rand(gint a)
 {
     srand(time(0));
@@ -361,7 +364,7 @@ void ggint_rand(gint a)
         a[i] = rand() % GInt_Base;
 }
 
-// generate random number a < b
+/* generate random number a < b */
 void ggint_rand_range(gint a,  gint b)
 {
     ggint_rand(a);
@@ -372,14 +375,14 @@ void ggint_rand_range(gint a,  gint b)
     ggint_div_gint(b, t, q, a);
 }
 
-// r = a^x mod n
+/* r = a^x mod n */
 void ggint_pow_mod(gint a, gint x,  gint n, gint r)
 {
     gint t;
     ggint_one(r);
     ggint_zero(t);
 
-    while (ggint_is_zero(x) == false)
+    while (ggint_is_zero(x) == 0)
     {
         if (ggint_is_odd(x))
         {
@@ -391,7 +394,7 @@ void ggint_pow_mod(gint a, gint x,  gint n, gint r)
         ggint_mod_gint(n, t, a);
     }
 }
-void ggint_print_format( char * pref, gint x, bool printBytes)
+void ggint_print_format( char * pref, gint x, int printBytes)
 {
     size_t n = 0, i;
     for (n = GInt_Size - 1; ; --n)
@@ -418,7 +421,7 @@ void ggint_print_format( char * pref, gint x, bool printBytes)
         printf("   %16s : ", "Decimal");
     else
         printf(" - %16s : ", pref);
-    while (ggint_is_zero(x) == false)
+    while (ggint_is_zero(x) == 0)
     {
         ggint_div_gint(_10, x, q, r);
         ggint_set_gint(x,q);
