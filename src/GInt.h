@@ -9,26 +9,26 @@
 #define GInt_Size 256
 #define GInt_DigitBits 8
 #define GInt_Base 256
-//#ifndef min(a, b)
-#define min(a, b) (a<b)?a:b
-//#endif // min
-//#ifndef max(a, b)
-#define max(a, b) (a>b)?a:b
-//#endif // max
+#ifndef min
+  #define min(a, b) (a<b)?a:b
+#endif /* min */
+#ifndef max
+  #define max(a, b) (a>b)?a:b
+#endif /* max */
 #ifndef bool
-#define bool int
-#endif // bool
+  #define bool int
+#endif /* bool */
 #ifndef true
-#define true 1
-#endif // true
+  #define true 1
+#endif /* true */
 #ifndef false
-#define false 0
-#endif // false
+  #define false 0
+#endif /* false */
 
 typedef uint8_t gint[GInt_Size];
-gint ggint_cache[GInt_Base+1];
-//bool ggint_cache_empty = true;
-gint ggint_lastnum;
+/* gint ggint_cache[GInt_Base+1]; */
+/* bool ggint_cache_empty = true; */
+/* gint ggint_lastnum; */
 
 bool ggint_equal(gint a, gint b);
 

@@ -1,4 +1,3 @@
-#include "GInt.h"
 #include "prime.h"
 #include <stdio.h>
 #include <time.h>

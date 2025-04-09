@@ -8,7 +8,7 @@
 #include <time.h>
 #include "GInt.h"
 
-typedef uint8_t gint[GInt_Size];
+// typedef uint8_t gint[GInt_Size];
 gint ggint_cache[GInt_Base+1];
 bool ggint_cache_empty = true;
 gint ggint_lastnum;
@@ -393,7 +393,7 @@ void ggint_pow_mod(gint a, gint x,  gint n, gint r)
 }
 void ggint_print_format( char * pref, gint x, bool printBytes)
 {
-    size_t n = 0;
+    size_t n = 0, i;
     for (n = GInt_Size - 1; ; --n)
     {
         if (x[n] != 0) break;
@@ -403,7 +403,7 @@ void ggint_print_format( char * pref, gint x, bool printBytes)
     if (printBytes)
     {
         printf(" - %16s : ", pref);
-        for (int i = 0; i <= n; ++i)
+        for (i = 0; i <= n; ++i)
             printf("%3d ", x[i]);
         printf("\n");
     }
@@ -424,7 +424,6 @@ void ggint_print_format( char * pref, gint x, bool printBytes)
         ggint_set_gint(x,q);
         str[n++] = '0' + r[0];
     }
-    size_t i;
     for (i = n - 1; ; --i)
     {
         printf("%c", str[i]);

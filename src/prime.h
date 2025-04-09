@@ -1,5 +1,6 @@
 #ifndef __PRIME_H__
 #define __PRIME_H__
+
 #include "GInt.h"
 
 //#define kDigits = 256; // max num : 2^(256*8) = 2^2048
